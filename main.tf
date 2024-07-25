@@ -1,6 +1,8 @@
 
 locals {
   vpc_id = aws_vpc.myvpc.id
+  az = data.aws_availability_zones.available.names[0]
+  az1 = data.aws_availability_zones.available.names[1]
 }
 
 #date source to pull down availability zones
@@ -30,7 +32,7 @@ resource "aws_instance" "web" {
 resource "aws_subnet" "private_sub" {
   vpc_id            = local.vpc_id
   cidr_block        = var.private_sub_cidr
-  availability_zone = data.aws_availability_zones.available.names[0]
+  availability_zone = local.az
 
   tags = {
     Name = "private_sub"
@@ -39,7 +41,7 @@ resource "aws_subnet" "private_sub" {
 resource "aws_subnet" "private_sub_2" {
   vpc_id            = local.vpc_id
   cidr_block        = "10.0.3.0/24"
-  availability_zone = data.aws_availability_zones.available.names[1]
+  availability_zone = local.az1
 
   tags = {
     Name = "private_sub_2"
@@ -49,7 +51,7 @@ resource "aws_subnet" "private_sub_2" {
 resource "aws_subnet" "public_sub" {
   vpc_id                  = local.vpc_id
   cidr_block              = var.public_sub_cidr
-  availability_zone       = data.aws_availability_zones.available.names[1]
+  availability_zone       = local.az1
   map_public_ip_on_launch = true
   tags = {
     Name = "public_sub"
@@ -59,7 +61,7 @@ resource "aws_subnet" "public_sub" {
 resource "aws_subnet" "public_sub_2" {
   vpc_id                  = local.vpc_id
   cidr_block              = "10.0.2.0/24"
-  availability_zone       = data.aws_availability_zones.available.names[0]
+  availability_zone       = local.az
   map_public_ip_on_launch = true
   tags = {
     Name = "public_sub_2"
